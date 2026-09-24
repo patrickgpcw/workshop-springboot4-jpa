@@ -1,0 +1,34 @@
+services:
+  postgres-db:
+    image: postgres:16
+    container_name: study-springboot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sb_study
+      POSTGRES_USER: sb_user
+      POSTGRES_PASSWORD: sb_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sb_user -d sb_study"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  spring-app:
+    build: .
+    container_name: spring_boot_container
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/sb_study
+      - SPRING_DATASOURCE_USERNAME=sb_user
+      - SPRING_DATASOURCE_PASSWORD=sb_password
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+volumes:
+  postgres_data:

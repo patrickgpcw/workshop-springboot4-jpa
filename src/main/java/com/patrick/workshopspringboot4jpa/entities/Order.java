@@ -1,10 +1,13 @@
 package com.patrick.workshopspringboot4jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.patrick.workshopspringboot4jpa.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.Objects;
+
+import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
 @Entity
 @Table(name = "orders")
@@ -13,6 +16,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonFormat(shape = STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant moment;
 
     @ManyToOne
@@ -32,10 +37,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Instant moment, OrderStatus status) {
+    public Order(Long id, Instant moment, OrderStatus status, User client) {
         this.id = id;
         this.moment = moment;
         this.status = status;
+        this.client = client;
     }
 
     public Long getId() {

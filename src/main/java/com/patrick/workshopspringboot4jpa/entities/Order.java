@@ -5,7 +5,9 @@ import com.patrick.workshopspringboot4jpa.entities.enums.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
@@ -25,6 +27,9 @@ public class Order {
     private User client;
 
     private Integer status;
+
+    @OneToMany(mappedBy = "id.order")
+    private Set<OrderItem> items = new HashSet<>();
 
     public User getClient() {
         return client;
@@ -76,6 +81,10 @@ public class Order {
         return Objects.equals(getId(), order.getId());
     }
 
+    public Set<OrderItem> getItems() {
+        return items;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
@@ -83,10 +92,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", moment=" + moment +
-                ", status=" + status +
-                '}';
+        return "Order{" + "id=" + id + ", moment=" + moment + ", status=" + status + '}';
     }
 }

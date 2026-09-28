@@ -24,7 +24,7 @@ public class Order {
     @JoinColumn(name = "client_id")
     private User client;
 
-    private OrderStatus status;
+    private Integer status;
 
     public User getClient() {
         return client;
@@ -37,7 +37,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Instant moment, OrderStatus status, User client) {
+    public Order(Long id, Instant moment, Integer status, User client) {
         this.id = id;
         this.moment = moment;
         this.status = status;
@@ -61,11 +61,11 @@ public class Order {
     }
 
     public OrderStatus getStatus() {
-        return status;
+        return OrderStatus.fromCode(status);
     }
 
     public void setStatus(OrderStatus status) {
-        this.status = status;
+        this.status = status.getCode();
     }
 
     @Override

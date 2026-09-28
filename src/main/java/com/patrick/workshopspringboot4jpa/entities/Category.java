@@ -1,8 +1,10 @@
 package com.patrick.workshopspringboot4jpa.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "categories")
@@ -12,6 +14,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> product = new HashSet<>();
 
     public Category() {
     }
@@ -37,17 +43,22 @@ public class Category {
         this.name = name;
     }
 
+    public Set<Product> getProduct() {
+        return product;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof Category category)) return false;
 
-        Category category = (Category) o;
-        return Objects.equals(getId(), category.getId());
+        return getId() != null && getId().equals(category.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        // Keep the hash stable when persistence assigns an ID.
+        return Category.class.hashCode();
     }
 
     @Override

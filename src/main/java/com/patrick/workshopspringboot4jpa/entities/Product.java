@@ -2,7 +2,8 @@ package com.patrick.workshopspringboot4jpa.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -15,6 +16,10 @@ public class Product {
     private String description;
     private Double price;
     private String imgUrl;
+
+    @ManyToMany
+    @JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();
 
     public Product() {
     }
@@ -67,27 +72,26 @@ public class Product {
         this.imgUrl = imgUrl;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) return true;
+        if (!(o instanceof Product product)) return false;
 
-        Product product = (Product) o;
-        return Objects.equals(getId(), product.getId());
+        return getId() != null && getId().equals(product.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        // Keep the hash stable when persistence assigns an ID.
+        return Product.class.hashCode();
     }
 
     @Override
     public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", imgUrl='" + imgUrl + '\'' +
-                '}';
+        return "Product{" + "id=" + id + ", name='" + name + '\'' + ", description='" + description + '\'' + ", price=" + price + ", imgUrl='" + imgUrl + '\'' + '}';
     }
 }

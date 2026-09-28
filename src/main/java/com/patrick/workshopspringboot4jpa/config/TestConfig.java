@@ -1,8 +1,10 @@
 package com.patrick.workshopspringboot4jpa.config;
 
+import com.patrick.workshopspringboot4jpa.entities.Category;
 import com.patrick.workshopspringboot4jpa.entities.Order;
 import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.entities.enums.OrderStatus;
+import com.patrick.workshopspringboot4jpa.repositories.CategoryRepository;
 import com.patrick.workshopspringboot4jpa.repositories.OrderRepository;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class TestConfig implements CommandLineRunner {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Override
     public void run(String... args) throws Exception {
         User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
@@ -34,5 +38,12 @@ public class TestConfig implements CommandLineRunner {
         Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.WAITING_PAYMENT.getCode(), u1);
 
         orderRepository.saveAll(Arrays.asList(o1, o2, o3));
+
+        Category cat1 = new Category(null, "Electronics");
+        Category cat2 = new Category(null, "Books");
+        Category cat3 = new Category(null, "Computers");
+
+        categoryRepository.saveAll(Arrays.asList(cat1, cat2, cat3));
+
     }
 }

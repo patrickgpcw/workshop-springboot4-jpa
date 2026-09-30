@@ -76,6 +76,14 @@ public class Order {
         this.status = status.getCode();
     }
 
+    public double getTotal() {
+        double total = 0.0;
+        for (OrderItem item : items) {
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

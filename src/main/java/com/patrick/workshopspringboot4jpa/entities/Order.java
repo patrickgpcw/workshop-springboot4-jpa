@@ -31,6 +31,9 @@ public class Order {
     @OneToMany(mappedBy = "id.order")
     private Set<OrderItem> items = new HashSet<>();
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private Payment payment;
+
     public User getClient() {
         return client;
     }
@@ -73,6 +76,14 @@ public class Order {
         this.status = status.getCode();
     }
 
+    public double getTotal() {
+        double total = 0.0;
+        for (OrderItem item : items) {
+            total += item.getSubtotal();
+        }
+        return total;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -83,6 +94,14 @@ public class Order {
 
     public Set<OrderItem> getItems() {
         return items;
+    }
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 
     @Override

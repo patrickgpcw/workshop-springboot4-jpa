@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
@@ -28,5 +31,12 @@ public class UserResource {
     public ResponseEntity<User> findById(@PathVariable Long id) {
         User user = service.findById(id);
         return ResponseEntity.ok().body(user);
+    }
+
+    @PostMapping
+    public ResponseEntity<User> insert(@RequestBody User user) {
+        service.insert(user);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(uri).body(user);
     }
 }

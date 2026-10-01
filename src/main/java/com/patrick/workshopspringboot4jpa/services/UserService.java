@@ -2,6 +2,7 @@ package com.patrick.workshopspringboot4jpa.services;
 
 import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,16 @@ public class UserService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    @Transactional
+    public void update( Long id,User user) {
+        User old = findById(id);
+        old.setName(user.getName());
+        old.setEmail(user.getEmail());
+        old.setPhone(user.getPhone());
+        old.setPassword(user.getPassword());
+        repository.save(old);
     }
 
 }

@@ -32,13 +32,23 @@ public class UserService {
     }
 
     @Transactional
-    public void update( Long id,User user) {
-        User old = findById(id);
-        old.setName(user.getName());
-        old.setEmail(user.getEmail());
-        old.setPhone(user.getPhone());
-        old.setPassword(user.getPassword());
+    public void update(Long id, User user) {
+        User old = repository.getReferenceById(id);
+        updateData(user, old);
         repository.save(old);
     }
+
+    private void updateData(User user, User old) {
+        if (user.getName() != null) {
+            old.setName(user.getName());
+        }
+        if (user.getEmail() != null) {
+            old.setEmail(user.getEmail());
+        }
+        if (user.getPhone() != null) {
+            old.setPhone(user.getPhone());
+        }
+    }
+
 
 }

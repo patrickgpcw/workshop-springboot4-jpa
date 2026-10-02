@@ -2,6 +2,7 @@ package com.patrick.workshopspringboot4jpa.services;
 
 import com.patrick.workshopspringboot4jpa.entities.Category;
 import com.patrick.workshopspringboot4jpa.repositories.CategoryRepository;
+import com.patrick.workshopspringboot4jpa.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,6 @@ public class CategoryService {
     }
 
     public Category findById(Long id) {
-        return repository.findById(id).get();
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 }

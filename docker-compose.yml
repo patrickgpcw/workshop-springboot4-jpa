@@ -24,6 +24,7 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - SPRING_PROFILES_ACTIVE=docker
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/sb_study
       - SPRING_DATASOURCE_USERNAME=sb_user
       - SPRING_DATASOURCE_PASSWORD=sb_password

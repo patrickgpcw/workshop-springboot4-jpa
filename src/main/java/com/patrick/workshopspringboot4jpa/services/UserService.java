@@ -2,6 +2,7 @@ package com.patrick.workshopspringboot4jpa.services;
 
 import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
+import com.patrick.workshopspringboot4jpa.services.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return repository.findById(id).get();
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public void insert(User user) {

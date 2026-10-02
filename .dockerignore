@@ -1,0 +1,8 @@
+.git
+.idea
+.codex
+.agents
+target
+*.iml
+.env
+.env.*

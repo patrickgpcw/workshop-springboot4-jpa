@@ -2,9 +2,11 @@ package com.patrick.workshopspringboot4jpa.services;
 
 import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
+import com.patrick.workshopspringboot4jpa.services.exceptions.DatabaseException;
 import com.patrick.workshopspringboot4jpa.services.exceptions.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,13 @@ public class UserService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+       try {
+           User user = findById(id);
+           repository.delete(user);
+       } catch (DataIntegrityViolationException e) {
+           throw new DatabaseException(e.getMessage());
+       }
+
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
 import com.patrick.workshopspringboot4jpa.services.exceptions.DatabaseException;
 import com.patrick.workshopspringboot4jpa.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -42,9 +43,13 @@ public class UserService {
 
     @Transactional
     public void update(Long id, User user) {
-        User old = repository.getReferenceById(id);
-        updateData(user, old);
-        repository.save(old);
+        try {
+            User old = repository.getReferenceById(id);
+            updateData(user, old);
+            repository.save(old);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User user, User old) {

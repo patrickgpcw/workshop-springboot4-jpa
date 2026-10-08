@@ -2,9 +2,10 @@ package com.patrick.workshopspringboot4jpa.services;
 
 import com.patrick.workshopspringboot4jpa.entities.User;
 import com.patrick.workshopspringboot4jpa.repositories.UserRepository;
+import com.patrick.workshopspringboot4jpa.resources.dto.UserUpdateRequest;
+import com.patrick.workshopspringboot4jpa.resources.mapper.UserMapper;
 import com.patrick.workshopspringboot4jpa.services.exceptions.DatabaseException;
 import com.patrick.workshopspringboot4jpa.services.exceptions.ResourceNotFoundException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,37 +33,21 @@ public class UserService {
     }
 
     public void delete(Long id) {
-       try {
-           User user = findById(id);
-           repository.delete(user);
-       } catch (DataIntegrityViolationException e) {
-           throw new DatabaseException(e.getMessage());
-       }
+        try {
+            User user = findById(id);
+            repository.delete(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(e.getMessage());
+        }
 
     }
 
     @Transactional
-    public void update(Long id, User user) {
-        try {
-            User old = repository.getReferenceById(id);
-            updateData(user, old);
-            repository.save(old);
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFoundException(id);
-        }
-    }
+    public User update(Long id, UserUpdateRequest request) {
+        User user = findById(id);
+        UserMapper.updateEntity(request, user);
+        return user;
 
-    private void updateData(User user, User old) {
-        if (user.getName() != null) {
-            old.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            old.setEmail(user.getEmail());
-        }
-        if (user.getPhone() != null) {
-            old.setPhone(user.getPhone());
-        }
     }
-
 
 }

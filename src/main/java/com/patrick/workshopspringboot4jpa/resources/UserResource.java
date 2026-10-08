@@ -1,6 +1,10 @@
 package com.patrick.workshopspringboot4jpa.resources;
 
 import com.patrick.workshopspringboot4jpa.entities.User;
+import com.patrick.workshopspringboot4jpa.resources.dto.UserCreateRequest;
+import com.patrick.workshopspringboot4jpa.resources.dto.UserResponse;
+import com.patrick.workshopspringboot4jpa.resources.dto.UserUpdateRequest;
+import com.patrick.workshopspringboot4jpa.resources.mapper.UserMapper;
 import com.patrick.workshopspringboot4jpa.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,24 +24,32 @@ public class UserResource {
     private UserService service;
 
     @GetMapping
-    public ResponseEntity<Page<User>> findAll(
+    public ResponseEntity<Page<UserResponse>> findAll(
             @PageableDefault(size = 10, sort = "id") Pageable pageable
     ) {
-        Page<User> page = service.findAll(pageable);
-        return ResponseEntity.ok().body(page);
+        Page<User> users = service.findAll(pageable);
+        Page<UserResponse> response = users.map(UserMapper::toResponse);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
         User user = service.findById(id);
-        return ResponseEntity.ok().body(user);
+        UserResponse responses = UserMapper.toResponse(user);
+        return ResponseEntity.ok().body(responses);
     }
 
     @PostMapping
-    public ResponseEntity<User> insert(@RequestBody User user) {
+    public ResponseEntity<UserResponse> insert(@RequestBody UserCreateRequest request) {
+        User user = UserMapper.toEntity(request);
         service.insert(user);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(user);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(user.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(UserMapper.toResponse(user));
     }
 
     @DeleteMapping("/{id}")
@@ -47,8 +59,8 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
-        service.update(id, user);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<UserResponse> update(@PathVariable Long id, @RequestBody UserUpdateRequest request) {
+        User user = service.update(id, request);
+        return ResponseEntity.ok(UserMapper.toResponse(user));
     }
 }

@@ -2,8 +2,6 @@ package com.patrick.workshopspringboot4jpa.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,9 +67,6 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
-    }
 
     public void setPassword(String password) {
         this.password = password;
